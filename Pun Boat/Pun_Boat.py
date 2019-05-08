@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import diceHandler
+import json
 
 requesttoken = open("botcommand.txt", "r").read()
 token = open("token.txt", "r").read()  # Token Information
@@ -44,7 +45,7 @@ async def setrequesttoken(ctx, index: str):
         await ctx.send("Not Enough Permissions")
 
 @bot.command()
-async def roll(ctx, dice: str):
+async def roll(ctx, dice: str, search: str = "None"):
     """Rolls a dice in <num>d<sides>format"""
     results = """The results from your role were
     {0}
@@ -58,8 +59,34 @@ async def roll(ctx, dice: str):
     Mode: {6}
 
     """
+    counted = """The following results were counted:"""
     d = diceHandler.diceHandle(dice)
-    await ctx.send("Debug: "+str(d)+"\n"+results.format(d["rolls"], d["average"], d["lowest"], d["highest"], d["total"], d["median"], d["mode"]))
+
+    amounts = []
+    counts = []
+    for number in range(1, d["limit"]+1):
+        if "amount"+str(number) in d:
+            amounts.append(d["amount"+str(number)])
+    for number in range(1, d["limit"]+1):
+        if "amount"+str(number) in d:
+            counts.append(str(number))
+    final = dict(zip(counts, amounts))
+    if "+" in search:
+        if "amount"+search in d:
+            finds = []
+            searchcount = search.split("+", 1)
+            for amount in range(searchcount[0], d["limit"]):
+                if "amount"+searchcount[0] in d:
+                    finds.append(d["amount"+searchcount[0])
+
+    if "amount"+search in d:
+        rolltext = "Found "+str(d["amount"+str(search)])+" of your number "+str(search)+" in the rolls"
+    else:
+        rolltext = "Did not find your roll search of "+str(search)+" in the rolls"
+    try:
+        await ctx.send(results.format(d["rollresults"], d["average"], d["lowest"], d["highest"], d["total"], d["median"], d["mode"])+rolltext+"\n\n"+counted+"\n"+str(final))
+    except Exception:
+        await ctx.send("Failed to calculate dice due to too larger quantity or maximum roll.")
 
 @bot.command(description="Info")
 async def botinfo(ctx):
@@ -70,11 +97,11 @@ def imdad(messagecontent, messageauthorname):
          afterim = "".split("im broken" , 1)
          dadname = open("dadname.txt", "r").read()
          #lets get there spelling of i'm
-         if " i'm " in messagecontent:
+         if "i'm " in messagecontent:
           afterim = messagecontent.split("i'm", 1)
-         if " I'm " in messagecontent:
+         if "I'm " in messagecontent:
           afterim = messagecontent.split("I'm", 1)
-         if " im " in messagecontent:
+         if "im " in messagecontent:
           afterim = messagecontent.split("im", 1)
          if messageauthorname == "Pun Boat":
             return ""
