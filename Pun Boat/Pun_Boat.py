@@ -61,7 +61,7 @@ async def roll(ctx, dice: str, search: str = "None"):
     """
     counted = """The following results were counted:"""
     d = diceHandler.diceHandle(dice)
-
+    
     amounts = []
     counts = []
     for number in range(1, d["limit"]+1):
@@ -71,18 +71,23 @@ async def roll(ctx, dice: str, search: str = "None"):
         if "amount"+str(number) in d:
             counts.append(str(number))
     final = dict(zip(counts, amounts))
-    if "+" in search:
-        if "amount"+search in d:
-            finds = []
-            searchcount = search.split("+", 1)
-            for amount in range(searchcount[0], d["limit"]):
-                if "amount"+searchcount[0] in d:
-                    finds.append(d["amount"+searchcount[0])
-
-    if "amount"+search in d:
-        rolltext = "Found "+str(d["amount"+str(search)])+" of your number "+str(search)+" in the rolls"
+    
+    searchcount = search.split("+", 1)
+    finds = []
+    if searchcount[0] != "None":
+        if "+" in search:
+            for amount in range(int(searchcount[0]), d["limit"]+1):
+                if "amount"+str(amount) in d:
+                    finds.append(d["amount"+str(amount)])    
+        findscounts = []
+        for amount in range(int(searchcount[0]), d["limit"]+1):
+            if "amount"+str(amount) in d:
+                findscounts.append(str(amount))
+        finalb = dict(zip(findscounts, finds))
+        finalc = json.dumps(finalb, indent = 2)
+        rolltext = "Found: "+"\n"+str(finalc)+"\n"+"Of your requested search term: "+str(search)
     else:
-        rolltext = "Did not find your roll search of "+str(search)+" in the rolls"
+        rolltext = ""
     try:
         await ctx.send(results.format(d["rollresults"], d["average"], d["lowest"], d["highest"], d["total"], d["median"], d["mode"])+rolltext+"\n\n"+counted+"\n"+str(final))
     except Exception:
