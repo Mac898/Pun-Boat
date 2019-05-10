@@ -5,7 +5,7 @@ import diceHandler
 import json
 
 requesttoken = open("botcommand.txt", "r").read()
-token = open("token.txt", "r").read()  # Token Information
+token = open("token.tokenstorage", "r").read()  # Token Information
 description = '''Mac's Brainchild,
 the Pun Boat'''
 bot = commands.Bot(command_prefix=requesttoken, description=description)
