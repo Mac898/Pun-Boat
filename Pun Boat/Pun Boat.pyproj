@@ -25,6 +25,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pun_Boat.py" />
+    <Compile Include="Pun_Boat + Old.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="botcommand.txt" />
+    <Content Include="dadname.txt" />
+    <Content Include="dadjokes.txt" />
+    <Content Include="help.txt" />
+    <Content Include="token.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="botcommand.txt" />
