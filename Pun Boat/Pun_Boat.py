@@ -8,7 +8,9 @@ requesttoken = open("botcommand.txt", "r").read()
 token = open("token.txt", "r").read()  # Token Information
 description = '''Mac's Brainchild,
 the Pun Boat'''
-bot = commands.Bot(command_prefix=requesttoken, description=description)
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix=requesttoken, description=description, intents=intents)
 
 @bot.event
 async def on_ready():
@@ -32,6 +34,15 @@ async def dadjoke(ctx):
     lines = open("dadjokes.txt").read().splitlines()
     myline = random.choice(lines)
     await ctx.send(myline)
+
+@bot.command(description="Dump all profile pics")
+async def profile_dump(ctx):
+    """Dump all profile pics"""
+    textd = open("profile_dump.txt","w+")
+    for member in ctx.guild.members:
+        if not member.bot:
+            textd.write(str(member.avatar_url) + "\n")
+    await ctx.send("Done!")
 
 @bot.command(description="Set the request token")
 async def setrequesttoken(ctx, index: str):
@@ -91,12 +102,11 @@ async def roll(ctx, dice: str, search: str = "None"):
                 for amount in range(0, int(searchcount[0])+1):
                     if "amount"+str(amount) in d:
                         findscounts.append(str(amount))
-        finalb = dict(zip(findscounts, finds))
-        finalc = json.dumps(finalb, indent = 2)
-        rolltext = "Found: "+"\n"+str(finalc)+"\n"+"Of your requested search term: "+str(search)
+            finalb = dict(zip(findscounts, finds))
+            finalc = json.dumps(finalb, indent = 2)
+            rolltext = "Found: "+"\n"+str(finalc)+"\n"+"Of your requested search term: "+str(search)
         else:
-        rolltext = ""
-
+            rolltext = ""
     else:
         if search != "None":
             if "amount"+str(search) in d:
@@ -115,9 +125,9 @@ def imdad(messagecontent, messageauthorname):
          afterim = "".split("im broken" , 1)
          dadname = open("dadname.txt", "r").read()
          #lets get there spelling of i'm
-         if "i'm " in messagecontent:
+         if "i'm" in messagecontent:
           afterim = messagecontent.split("i'm", 1)
-         if "I'm " in messagecontent:
+         if "I'm" in messagecontent:
           afterim = messagecontent.split("I'm", 1)
          if "im " in messagecontent:
           afterim = messagecontent.split("im", 1)
